@@ -1,3 +1,4 @@
+#make sure to send env:OPENAI_API_KEY=your_api_key_here in the terminal before running this code.
 from pydantic import BaseModel
 from pydantic_ai import Agent
 import sys
@@ -55,3 +56,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
