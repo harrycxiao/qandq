@@ -1,32 +1,52 @@
-# Excel Outline (mini version)
+# Excel Outline Parser
 
-Goal: turn a `.xlsx` workbook into a compact JSON outline for LLM use.
+Mini project for converting `.xlsx` workbooks into a compact JSON outline.
 
-The point is not to dump every populated cell. The point is to describe the
-layout skeleton:
+The goal is not to dump every populated cell, but to describe the **structure**
+of the workbook in a way that is easy to use for analysis or LLM input.
+
+The parser extracts high-level layout elements such as:
 
 - anchors like `Sheet!A1`
-- maps
+- key/value maps
 - tables
-- series rules
+- integer column ranges
+- series rules inferred from formulas
+
+---
 
 ## Example
 
 Fixture:
 
-- `intern/excel_outline/fixtures/simple_outline_examples.xlsx`
+
+excel_outline/fixtures/simple_outline_examples.xlsx
+
 
 Sheets:
 
-- `Input`
-  `var/value`, with `a = 3` and `b = 4`
-- `Output`
-  one table with columns `1..10`
-  row `a`: `column * a`
-  row `b`: `column * b`
-  row `c`: `a + b`
+- **Input**
+  simple key/value map
 
-Desired idea:
+
+var | value
+a | 3
+b | 4
+
+
+- **Output**
+  table with columns `1..10`
+
+
+series | 1 | 2 | 3 | ... | 10
+a | column * a
+b | column * b
+c | a + b
+
+
+---
+
+## Desired outline
 
 ```json
 {
@@ -50,25 +70,20 @@ Desired idea:
         {
           "kind": "table",
           "anchor": "Output!A1",
-          "columns": { "anchor": "Output!B1", "range": "Output!B1:K1", "start": 1, "end": 10, "step": 1 },
+          "columns": {
+            "anchor": "Output!B1",
+            "range": "Output!B1:K1",
+            "start": 1,
+            "end": 10,
+            "step": 1
+          },
           "series": {
-            "a": { "anchor": "Output!A2", "range": "Output!B2:K2", "rule": "column * a" },
-            "b": { "anchor": "Output!A3", "range": "Output!B3:K3", "rule": "column * b" },
-            "c": { "anchor": "Output!A4", "range": "Output!B4:K4", "rule": "a + b" }
+            "a": { "rule": "column * a" },
+            "b": { "rule": "column * b" },
+            "c": { "rule": "a + b" }
           }
         }
       ]
     }
   ]
 }
-```
-
-That is the core idea: keep the schema, not the expanded grid.
-
-## Status
-
-- `.xlsx` only
-- implementation intentionally not written yet
-- spec lives in `intern/excel_outline/test_parser.py`
-- parser stub raises `NotImplementedError`
-
