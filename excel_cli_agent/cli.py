@@ -41,7 +41,7 @@ agent = Agent(
     """ 
 )
 
-def main():
+def cli():
     file = sys.argv[1]
     question = sys.argv[2]
 
@@ -54,5 +54,5 @@ def main():
 
     print(result)
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__cli__":
+    cli()
