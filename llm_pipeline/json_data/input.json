@@ -1,0 +1,21 @@
+{
+  "name": "Input",
+  "elements": [
+    {
+      "kind": "map",
+      "anchor": "Input!A1",
+      "entries": {
+        "a": {
+          "anchor": "Input!A2",
+          "value_anchor": "Input!B2",
+          "value": 3
+        },
+        "b": {
+          "anchor": "Input!A3",
+          "value_anchor": "Input!B3",
+          "value": 4
+        }
+      }
+    }
+  ]
+}
