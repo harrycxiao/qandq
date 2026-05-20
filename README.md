@@ -11,7 +11,7 @@ Collection of experiments, utilities, and mini-projects related to:
 
 This repository contains simplified examples inspired by work completed during my experience at Q&Q AI, an AI startup focused on improving and streamlining financial workflows.
 
-The projects below are arranged roughly in the order they were built and reflect an evolving exploration of how structured financial data can move through AI systems.
+The projects below are arranged roughly in the order they were built and reflect an evolving exploration of how structured data can move through AI systems.
 
 ---
 
