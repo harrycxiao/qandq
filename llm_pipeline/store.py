@@ -1,16 +1,23 @@
-import json
-import psycopg2
+from dotenv import load_dotenv
 from pathlib import Path
+import json
+import os
+
+import psycopg2
 
 
-conn = psycopg2.connect(
-    dbname="llm_pipeline",
-    user="postgres",
-    password="your password",
-    host="localhost",
-    port=5432
-)
+load_dotenv()
 
+DB_CONFIG = {
+    "dbname": "llm_pipeline",
+    "user": "postgres",
+    "password": os.getenv("POSTGRES_PASSWORD"),
+    "host": "localhost",
+    "port": 5432,
+}
+
+
+conn = psycopg2.connect(**DB_CONFIG)
 cur = conn.cursor()
 
 cur.execute("""
@@ -45,13 +52,12 @@ for file_path in json_folder.glob("*.json"):
     """, (
         name,
         file_path.name,
-        json.dumps(data)
+        json.dumps(data),
     ))
 
     print(f"Stored {name}")
 
 conn.commit()
-
 cur.close()
 conn.close()
 
