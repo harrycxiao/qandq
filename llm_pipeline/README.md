@@ -4,6 +4,7 @@ A prototype demonstrating how structured workbook JSON data can be stored in Pos
 
 ## Architecture
 
+```text
 JSON Workbook Files
 ↓
 PostgreSQL (JSONB)
@@ -15,6 +16,7 @@ FastAPI endpoints
 PydanticAI Agent
 ↓
 CLI interaction
+```
 
 ## Features
 
