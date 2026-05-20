@@ -6,7 +6,7 @@ import psycopg2
 DB_CONFIG = {
     "dbname": "llm_pipeline",
     "user": "postgres",
-    "password": "H@T$&COCn1",  # replace locally before running
+    "password": "your password",
     "host": "localhost",
     "port": 5432,
 }
