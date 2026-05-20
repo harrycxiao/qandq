@@ -6,7 +6,7 @@ from pathlib import Path
 conn = psycopg2.connect(
     dbname="llm_pipeline",
     user="postgres",
-    password="H@T$&COCn1",
+    password="your password",
     host="localhost",
     port=5432
 )
