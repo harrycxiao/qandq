@@ -32,3 +32,28 @@ Update a and b to 20 and 30
 Agent:
 
 Updated values and recomputed outputs...
+
+## Setup
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Set environment variables:
+
+```bash
+OPENAI_API_KEY=...
+POSTGRES_PASSWORD=...
+```
+
+Run:
+
+```bash
+python store.py
+
+uvicorn api:app --reload
+
+python cli_agent.py
+```
