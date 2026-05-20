@@ -1,24 +1,26 @@
-#read and write functions to the Postgres database that API endpoints will call
+from dotenv import load_dotenv
 import json
+import os
+
 import psycopg2
 
+
+load_dotenv()
 
 DB_CONFIG = {
     "dbname": "llm_pipeline",
     "user": "postgres",
-    "password": "your password",
+    "password": os.getenv("POSTGRES_PASSWORD"),
     "host": "localhost",
     "port": 5432,
 }
 
 
 def get_connection():
-    """Create a new connection to Postgres."""
     return psycopg2.connect(**DB_CONFIG)
 
 
 def list_records():
-    """Return basic metadata for all stored JSON records."""
     conn = get_connection()
     cur = conn.cursor()
 
@@ -46,7 +48,6 @@ def list_records():
 
 
 def get_record_by_name(name):
-    """Return the full JSON data for one record, like Input or Output."""
     conn = get_connection()
     cur = conn.cursor()
 
@@ -68,7 +69,6 @@ def get_record_by_name(name):
 
 
 def save_record_by_name(name, data):
-    """Save a modified JSON object back into Postgres."""
     conn = get_connection()
     cur = conn.cursor()
 
@@ -80,18 +80,11 @@ def save_record_by_name(name, data):
     """, (json.dumps(data), name))
 
     conn.commit()
-
     cur.close()
     conn.close()
 
 
 def get_input_values():
-    """
-    Return clean input values from the Input JSON.
-
-    Example:
-    {"a": 3, "b": 4}
-    """
     input_data = get_record_by_name("Input")
 
     if input_data is None:
@@ -106,12 +99,6 @@ def get_input_values():
 
 
 def update_input_value(key, value):
-    """
-    Update one value in the Input JSON.
-
-    Example:
-    update_input_value("a", 10)
-    """
     input_data = get_record_by_name("Input")
 
     if input_data is None:
@@ -135,19 +122,6 @@ def update_input_value(key, value):
 
 
 def get_output_values():
-    """
-    Return clean output values from the Output JSON.
-
-    Example:
-    {
-        "columns": [1, 2, 3, ..., 10],
-        "series": {
-            "a": [3, 6, 9, ...],
-            "b": [4, 8, 12, ...],
-            "c": [7, 14, 21, ...]
-        }
-    }
-    """
     output_data = get_record_by_name("Output")
 
     if output_data is None:
@@ -162,20 +136,14 @@ def get_output_values():
         "series": {
             name: details.get("values", [])
             for name, details in series.items()
-        }
+        },
     }
 
 
 def recompute_output_values():
     """
-    Recalculate Output values from current Input values.
-
-    This updates:
-    - columns["values"]
-    - each series["values"]
-
-    It does not let the LLM manually edit outputs.
-    Outputs are derived from Input + rules.
+    Recompute derived outputs from current inputs.
+    Outputs remain rule-based instead of being manually edited by the LLM.
     """
     input_values = get_input_values()
     output_data = get_record_by_name("Output")
@@ -231,15 +199,11 @@ def recompute_output_values():
 
     return {
         "columns": columns,
-        "series": computed
+        "series": computed,
     }
 
 
 def update_input_and_recompute(key, value):
-    """
-    Update one input value, then recompute all derived output values.
-    This is the main function your API/LLM should call.
-    """
     update_summary = update_input_value(key, value)
     recomputed_outputs = recompute_output_values()
 
